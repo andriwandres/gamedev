@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dvf20ckp7w5hy"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_776o0"]
-size = Vector2(40, 10)
+[ext_resource type="PackedScene" uid="uid://cji7oil0xk2xa" path="res://Scenes/river_3d_scene.tscn" id="1_epb4y"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eds3f"]
 
@@ -14,9 +13,7 @@ sky = SubResource("Sky_eds3f")
 
 [node name="GameplayScene" type="Node3D" unique_id=1076854205]
 
-[node name="River" type="MeshInstance3D" parent="." unique_id=1428385567]
-transform = Transform3D(0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, 0, 0, 1, -0.3320315, 0.23617351, 0.16997337)
-mesh = SubResource("PlaneMesh_776o0")
+[node name="River" parent="." unique_id=15531161 instance=ExtResource("1_epb4y")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=945019305]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -15.046657, 1.8730669, 0)

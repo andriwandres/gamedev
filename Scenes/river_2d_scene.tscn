@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://bq4ivg1egywlo"]
+
+[ext_resource type="Script" uid="uid://dw26ibcyam23p" path="res://addons/godot-rapier2d/fluid_2d_rectangle.gd" id="1_w6ea8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_28hf4"]
+size = Vector2(1159, 20)
+
+[node name="River" type="Node2D" unique_id=1525033201]
+
+[node name="Fluid2D" type="Fluid2D" parent="." unique_id=1170199389]
+debug_draw = true
+points = PackedVector2Array(0, 0, 40, 0, 80, 0, 120, 0, 160, 0, 200, 0, 240, 0, 280, 0, 320, 0, 360, 0, 0, 40, 40, 40, 80, 40, 120, 40, 160, 40, 200, 40, 240, 40, 280, 40, 320, 40, 360, 40, 0, 80, 40, 80, 80, 80, 120, 80, 160, 80, 200, 80, 240, 80, 280, 80, 320, 80, 360, 80, 0, 120, 40, 120, 80, 120, 120, 120, 160, 120, 200, 120, 240, 120, 280, 120, 320, 120, 360, 120, 0, 160, 40, 160, 80, 160, 120, 160, 160, 160, 200, 160, 240, 160, 280, 160, 320, 160, 360, 160)
+position = Vector2(-80, -45)
+script = ExtResource("1_w6ea8")
+height = 5
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=50149362]
+anchor_mode = 0
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1418919619]
+position = Vector2(-80, -45)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1456030595]
+position = Vector2(84.5, 356)
+shape = SubResource("RectangleShape2D_28hf4")
