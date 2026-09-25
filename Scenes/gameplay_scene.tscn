@@ -1,8 +1,43 @@
 [gd_scene format=3 uid="uid://dvf20ckp7w5hy"]
 
 [ext_resource type="PackedScene" uid="uid://cji7oil0xk2xa" path="res://Scenes/river_3d_scene.tscn" id="1_epb4y"]
-[ext_resource type="PackedScene" path="res://Scenes/Levels/level_01.tscn" id="2_level"]
-[ext_resource type="Script" path="res://Scripts/UI/mud_counter_label.gd" id="3_counter"]
+[ext_resource type="Texture2D" uid="uid://t82mx0rt7rpo" path="res://Assets/Grass_20-512x512.png" id="1_t5vvb"]
+[ext_resource type="Script" uid="uid://dhuihlm7u028w" path="res://Scripts/Level/level_2d.gd" id="2_y365c"]
+[ext_resource type="Script" uid="uid://dpxia7vvg2d7y" path="res://Scripts/UI/mud_counter_label.gd" id="3_counter"]
+[ext_resource type="Script" uid="uid://bas2dwkchw4b3" path="res://Scripts/Level/mud_burst_2d.gd" id="3_t5vvb"]
+[ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="4_6ksri"]
+[ext_resource type="Script" uid="uid://cavhoyl3jafec" path="res://Scripts/Level/mud_sink_2d.gd" id="5_uwf40"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m8blu"]
+albedo_color = Color(0.28242135, 0.46286952, 0.40373722, 1)
+albedo_texture = ExtResource("1_t5vvb")
+metallic_specular = 0.12
+roughness = 0.8
+roughness_texture = ExtResource("1_t5vvb")
+roughness_texture_channel = 1
+normal_scale = -9.55
+normal_texture = ExtResource("1_t5vvb")
+ao_enabled = true
+ao_light_affect = 0.19
+uv1_scale = Vector3(6.06, 6.06, 6.06)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_j87mf"]
+size = Vector2(120, 90)
+
+[sub_resource type="PackedScene" id="PackedScene_ykw5v"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"id_paths": [],
+"names": PackedStringArray("Level01", "script", "size", "gravity_scale", "Node2D", "OpeningBurst", "position", "LateBurst", "shape", "delay", "launch_velocity", "Boulder", "texture_repeat", "color", "polygon", "Polygon2D", "Village", "Terrain2D", "metadata/_custom_type_script", "Terrain2D2"),
+"node_count": 7,
+"node_ids": PackedInt32Array(556361835, 450454348, 1168492288, 388245298, 884171506, 1452495196, 704518883),
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 4, 0, -1, 3, 1, 0, 2, 1, 3, 2, 0, 0, 0, 4, 5, -1, 2, 6, 3, 1, 4, 0, 0, 0, 4, 7, -1, 5, 6, 5, 1, 4, 8, 6, 9, 7, 10, 8, 0, 0, 0, 15, 11, -1, 5, 12, 9, 6, 10, 13, 11, 14, 12, 1, 13, 0, 0, 0, 4, 16, -1, 3, 6, 14, 1, 15, 2, 16, 0, 0, 0, 15, 17, -1, 6, 12, 9, 6, 17, 13, 11, 14, 18, 1, 13, 18, 19, 0, 0, 0, 15, 19, -1, 6, 12, 9, 6, 20, 13, 11, 14, 21, 1, 13, 18, 19, 0),
+"variants": [ExtResource("2_y365c"), Vector2(30, 40), 0.35, Vector2(200, 100), ExtResource("3_t5vvb"), Vector2(290, 140), 1, 4.0, Vector2(-150, 0), 2, Vector2(33, 489), Color(0.36, 0.29, 0.22, 1), PackedVector2Array(-60, 20, -54, -158, 432, -75, 672, 3, 637, 224, -49, 453), ExtResource("4_6ksri"), Vector2(0, 1540), ExtResource("5_uwf40"), Vector2(1600, 60), Vector2(832, 518), PackedVector2Array(198, 44, -26, 240, 414, 274, 461, 7), "uid://dgaefv0ribnd6", Vector2(319, 955), PackedVector2Array(293, 183, -50, 66, 137, 286, 472, 268, 461, 7)],
+"version": 3
+}
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eds3f"]
 
@@ -11,13 +46,28 @@ sky_material = SubResource("ProceduralSkyMaterial_eds3f")
 
 [sub_resource type="Environment" id="Environment_776o0"]
 background_mode = 2
+background_color = Color(0.5884179, 0.5233473, 0.67652386, 1)
 sky = SubResource("Sky_eds3f")
+ambient_light_source = 2
+ambient_light_color = Color(0.7058824, 0.3764706, 0.2, 1)
+glow_enabled = true
+glow_intensity = 1.21
+glow_bloom = 0.24
+fog_enabled = true
+fog_light_energy = 0.6
+volumetric_fog_albedo = Color(0.3171325, 0.41097432, 0.5389892, 1)
 
 [node name="GameplayScene" type="Node3D" unique_id=1076854205]
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1146657663]
+transform = Transform3D(1, 0, 0, 0, 0.57357645, -0.81915206, 0, 0.81915206, 0.57357645, 0, 3.4777737, -2.6628923)
+material_override = SubResource("StandardMaterial3D_m8blu")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_j87mf")
+
 [node name="River" parent="." unique_id=15531161 instance=ExtResource("1_epb4y")]
-transform = Transform3D(1, 0, 0, 0, 0.9633987, -0.26807272, 0, 0.26807272, 0.9633987, 0, 0, 0)
-level_scene = ExtResource("2_level")
+transform = Transform3D(1, 0, 0, 0, 0.57357645, -0.81915206, 0, 0.81915206, 0.57357645, 0, 6.422366, 0)
+level_scene = SubResource("PackedScene_ykw5v")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=945019305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07146168, 1.8730669, 16.837263)
@@ -25,12 +75,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07146168, 1.8730669, 16.837
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=696127480]
 environment = SubResource("Environment_776o0")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2040173350]
+transform = Transform3D(1, 0, 0, 0, 0.65501666, 0.7556144, 0, -0.7556144, 0.65501666, 0, 24.591305, 15.24374)
+shadow_enabled = true
+
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1928608235]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.189881, 0)
+visible = false
 
-[node name="Hud" type="CanvasLayer" parent="."]
+[node name="Hud" type="CanvasLayer" parent="." unique_id=1487582743]
 
-[node name="MudCounter" type="Label" parent="Hud" node_paths=PackedStringArray("stage")]
+[node name="MudCounter" type="Label" parent="Hud" unique_id=1761934515 node_paths=PackedStringArray("stage")]
 offset_left = 16.0
 offset_top = 16.0
 theme_override_font_sizes/font_size = 28

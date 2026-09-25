@@ -7,7 +7,13 @@
 [ext_resource type="Script" uid="uid://ch11ivcuwv25x" path="res://Scripts/River/river_walls_2d.gd" id="3_walls"]
 
 [sub_resource type="FluidEffect2DElasticity" id="FluidEffect2DElasticity_v17h0"]
-young_modulus = 1000000.0
+young_modulus = 5000000.0
+poisson_ratio = 0.1
+nonlinear_strain = false
+
+[sub_resource type="FluidEffect2DSurfaceTensionAKINCI" id="FluidEffect2DSurfaceTensionAKINCI_2es3b"]
+fluid_tension_coefficient = 3.205
+boundary_adhesion_coefficient = 10.79
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_y78by"]
 _surfaces = [{
@@ -25,15 +31,12 @@ _surfaces = [{
 
 [sub_resource type="MultiMesh" id="MultiMesh_2es3b"]
 use_colors = true
-instance_count = 50
 mesh = SubResource("ArrayMesh_y78by")
-buffer = PackedFloat32Array(5, 0, 0, 0, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3)
 
 [node name="River" type="Node2D" unique_id=1525033201]
 
 [node name="Fluid2D" type="Fluid2D" parent="." unique_id=1170199389]
-effects = Array[Resource]([SubResource("FluidEffect2DElasticity_v17h0")])
-position = Vector2(0, 0)
+effects = Array[Resource]([SubResource("FluidEffect2DElasticity_v17h0"), SubResource("FluidEffect2DSurfaceTensionAKINCI_2es3b")])
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=50149362]
 
@@ -42,7 +45,6 @@ script = ExtResource("3_walls")
 
 [node name="Fluid2DRenderer" type="MultiMeshInstance2D" parent="." unique_id=1910948131 node_paths=PackedStringArray("fluid")]
 visible = false
-position = Vector2(0, 0)
 multimesh = SubResource("MultiMesh_2es3b")
 texture = ExtResource("1_r2t0d")
 script = ExtResource("2_y78by")
