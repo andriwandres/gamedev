@@ -11,13 +11,13 @@ resource_local_to_scene = true
 albedo_texture = SubResource("ViewportTexture_epb4y")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_776o0"]
-size = Vector2(40, 10)
+size = Vector2(10, 40)
 
 [node name="River" type="Node3D" unique_id=15531161]
 script = ExtResource("1_v17h0")
 
 [node name="RiverMesh" type="MeshInstance3D" parent="." unique_id=1606811509]
-transform = Transform3D(0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, 0, 0, 1, -0.3320315, 0.23617351, 0.16997337)
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, -0.3320315, 0.23617351, 0.16997337)
 material_override = SubResource("StandardMaterial3D_j87mf")
 mesh = SubResource("PlaneMesh_776o0")
 

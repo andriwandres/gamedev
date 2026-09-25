@@ -14,9 +14,11 @@ sky = SubResource("Sky_eds3f")
 [node name="GameplayScene" type="Node3D" unique_id=1076854205]
 
 [node name="River" parent="." unique_id=15531161 instance=ExtResource("1_epb4y")]
+transform = Transform3D(1, 0, 0, 0, 0.9633987, -0.26807272, 0, 0.26807272, 0.9633987, 0, 0, 0)
+size = Vector2(10, 40)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=945019305]
-transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -15.046657, 1.8730669, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07146168, 1.8730669, 16.837263)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=696127480]
 environment = SubResource("Environment_776o0")

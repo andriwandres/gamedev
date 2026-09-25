@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dw26ibcyam23p" path="res://addons/godot-rapier2d/fluid_2d_rectangle.gd" id="1_w6ea8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_28hf4"]
-size = Vector2(1159, 20)
+size = Vector2(446.5, 20)
 
 [node name="River" type="Node2D" unique_id=1525033201]
 
@@ -15,11 +15,12 @@ script = ExtResource("1_w6ea8")
 height = 5
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=50149362]
+visible = false
 anchor_mode = 0
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1418919619]
 position = Vector2(-80, -45)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1456030595]
-position = Vector2(84.5, 356)
+position = Vector2(-143.25, 1057)
 shape = SubResource("RectangleShape2D_28hf4")
