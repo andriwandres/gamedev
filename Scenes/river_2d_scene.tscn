@@ -1,9 +1,32 @@
 [gd_scene format=3 uid="uid://bq4ivg1egywlo"]
 
-[ext_resource type="Script" uid="uid://dw26ibcyam23p" path="res://addons/godot-rapier2d/fluid_2d_rectangle.gd" id="1_w6ea8"]
+[ext_resource type="Texture2D" uid="uid://cho3shol3rky2" path="res://addons/godot-rapier2d/Radial2D.svg" id="1_r2t0d"]
+[ext_resource type="Script" path="res://Scripts/Fluid/viewport_fluid_2d_shader_renderer.gd" id="1_sdcln"]
+[ext_resource type="Material" uid="uid://cysnk7s2ll173" path="res://addons/godot-rapier2d/water_shader.tres" id="2_r2t0d"]
+[ext_resource type="Script" uid="uid://c70amrnbdymwf" path="res://addons/godot-rapier2d/fluid_2d_renderer.gd" id="2_y78by"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_28hf4"]
 size = Vector2(446.5, 20)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_y78by"]
+_surfaces = [{
+"2d": true,
+"aabb": AABB(-16, -16, 0, 32, 32, 0),
+"attribute_data": PackedByteArray(0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63),
+"format": 34393296913,
+"index_count": 6,
+"index_data": PackedByteArray(3, 0, 0, 0, 1, 0, 1, 0, 2, 0, 3, 0),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 128, 193, 0, 0, 128, 65, 0, 0, 128, 193, 0, 0, 128, 193, 0, 0, 128, 65, 0, 0, 128, 193, 0, 0, 128, 65, 0, 0, 128, 65)
+}]
+
+[sub_resource type="MultiMesh" id="MultiMesh_2es3b"]
+use_colors = true
+instance_count = 50
+mesh = SubResource("ArrayMesh_y78by")
+buffer = PackedFloat32Array(5, 0, 0, 0, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 0, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 40, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 80, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 120, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 0, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 40, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 80, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 120, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 160, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 200, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 240, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 280, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 320, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3, 5, 0, 0, 360, 0, 5, 0, 160, 0.8, 0.8, 0.8, 0.3)
 
 [node name="River" type="Node2D" unique_id=1525033201]
 
@@ -11,16 +34,27 @@ size = Vector2(446.5, 20)
 debug_draw = true
 points = PackedVector2Array(0, 0, 40, 0, 80, 0, 120, 0, 160, 0, 200, 0, 240, 0, 280, 0, 320, 0, 360, 0, 0, 40, 40, 40, 80, 40, 120, 40, 160, 40, 200, 40, 240, 40, 280, 40, 320, 40, 360, 40, 0, 80, 40, 80, 80, 80, 120, 80, 160, 80, 200, 80, 240, 80, 280, 80, 320, 80, 360, 80, 0, 120, 40, 120, 80, 120, 120, 120, 160, 120, 200, 120, 240, 120, 280, 120, 320, 120, 360, 120, 0, 160, 40, 160, 80, 160, 120, 160, 160, 160, 200, 160, 240, 160, 280, 160, 320, 160, 360, 160)
 position = Vector2(-80, -45)
-script = ExtResource("1_w6ea8")
-height = 5
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=50149362]
-visible = false
-anchor_mode = 0
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1418919619]
 position = Vector2(-80, -45)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1456030595]
-position = Vector2(-143.25, 1057)
+position = Vector2(59, 776)
 shape = SubResource("RectangleShape2D_28hf4")
+
+[node name="Fluid2DRenderer" type="MultiMeshInstance2D" parent="." unique_id=1910948131 node_paths=PackedStringArray("fluid")]
+visible = false
+position = Vector2(-80, -45)
+multimesh = SubResource("MultiMesh_2es3b")
+texture = ExtResource("1_r2t0d")
+script = ExtResource("2_y78by")
+fluid = NodePath("../Fluid2D")
+metadata/_custom_type_script = "uid://c70amrnbdymwf"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1088979395 node_paths=PackedStringArray("fluid", "camera")]
+script = ExtResource("1_sdcln")
+fluid = NodePath("../Fluid2D")
+camera = NodePath("../Camera2D")
+water_material = ExtResource("2_r2t0d")
