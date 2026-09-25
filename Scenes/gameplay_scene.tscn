@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dvf20ckp7w5hy"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_776o0"]
+size = Vector2(40, 10)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eds3f"]
+
+[sub_resource type="Sky" id="Sky_eds3f"]
+sky_material = SubResource("ProceduralSkyMaterial_eds3f")
+
+[sub_resource type="Environment" id="Environment_776o0"]
+background_mode = 2
+sky = SubResource("Sky_eds3f")
+
+[node name="GameplayScene" type="Node3D" unique_id=1076854205]
+
+[node name="River" type="MeshInstance3D" parent="." unique_id=1428385567]
+transform = Transform3D(0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, 0, 0, 1, -0.3320315, 0.23617351, 0.16997337)
+mesh = SubResource("PlaneMesh_776o0")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=945019305]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -15.046657, 1.8730669, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=696127480]
+environment = SubResource("Environment_776o0")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1928608235]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.189881, 0)
