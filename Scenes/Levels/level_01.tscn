@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://cx1y52bsd03el"]
+
+[ext_resource type="Script" uid="uid://dhuihlm7u028w" path="res://Scripts/Level/level_2d.gd" id="1_level"]
+[ext_resource type="Script" uid="uid://bas2dwkchw4b3" path="res://Scripts/Level/mud_burst_2d.gd" id="2_burst"]
+[ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="4_terrain"]
+[ext_resource type="Script" uid="uid://cavhoyl3jafec" path="res://Scripts/Level/mud_sink_2d.gd" id="5_sink"]
+
+[node name="Level01" type="Node2D" unique_id=556361835]
+script = ExtResource("1_level")
+size = Vector2(30, 40)
+gravity_scale = 0.35
+
+[node name="OpeningBurst" type="Node2D" parent="." unique_id=450454348]
+position = Vector2(200, 100)
+script = ExtResource("2_burst")
+
+[node name="LateBurst" type="Node2D" parent="." unique_id=1168492288]
+position = Vector2(290, 140)
+script = ExtResource("2_burst")
+shape = 1
+delay = 4.0
+launch_velocity = Vector2(-150, 0)
+
+[node name="Boulder" type="Polygon2D" parent="." unique_id=388245298]
+texture_repeat = 2
+position = Vector2(33, 489)
+color = Color(0.36, 0.29, 0.22, 1)
+polygon = PackedVector2Array(-60, 20, -54, -158, 432, -75, 672, 3, 637, 224, -49, 453)
+script = ExtResource("4_terrain")
+
+[node name="Village" type="Node2D" parent="." unique_id=884171506]
+position = Vector2(0, 1540)
+script = ExtResource("5_sink")
+size = Vector2(1600, 60)
+
+[node name="Terrain2D" type="Polygon2D" parent="." unique_id=1452495196]
+texture_repeat = 2
+position = Vector2(832, 518)
+color = Color(0.36, 0.29, 0.22, 1)
+polygon = PackedVector2Array(198, 44, -26, 240, 414, 274, 461, 7)
+script = ExtResource("4_terrain")
+metadata/_custom_type_script = "uid://dgaefv0ribnd6"
+
+[node name="Terrain2D2" type="Polygon2D" parent="." unique_id=704518883]
+texture_repeat = 2
+position = Vector2(319, 955)
+color = Color(0.36, 0.29, 0.22, 1)
+polygon = PackedVector2Array(293, 183, -50, 66, 137, 286, 472, 268, 461, 7)
+script = ExtResource("4_terrain")
+metadata/_custom_type_script = "uid://dgaefv0ribnd6"

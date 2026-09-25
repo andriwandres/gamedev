@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dvf20ckp7w5hy"]
 
 [ext_resource type="PackedScene" uid="uid://cji7oil0xk2xa" path="res://Scenes/river_3d_scene.tscn" id="1_epb4y"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/level_01.tscn" id="2_level"]
+[ext_resource type="Script" path="res://Scripts/UI/mud_counter_label.gd" id="3_counter"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eds3f"]
 
@@ -15,7 +17,7 @@ sky = SubResource("Sky_eds3f")
 
 [node name="River" parent="." unique_id=15531161 instance=ExtResource("1_epb4y")]
 transform = Transform3D(1, 0, 0, 0, 0.9633987, -0.26807272, 0, 0.26807272, 0.9633987, 0, 0, 0)
-size = Vector2(10, 40)
+level_scene = ExtResource("2_level")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=945019305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07146168, 1.8730669, 16.837263)
@@ -25,3 +27,12 @@ environment = SubResource("Environment_776o0")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1928608235]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.189881, 0)
+
+[node name="Hud" type="CanvasLayer" parent="."]
+
+[node name="MudCounter" type="Label" parent="Hud" node_paths=PackedStringArray("stage")]
+offset_left = 16.0
+offset_top = 16.0
+theme_override_font_sizes/font_size = 28
+script = ExtResource("3_counter")
+stage = NodePath("../../River")
