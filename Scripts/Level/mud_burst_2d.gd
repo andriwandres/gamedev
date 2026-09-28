@@ -57,13 +57,13 @@ func release() -> void:
 	for offset in get_particle_offsets():
 		points.append(fluid.to_local(to_global(offset)))
 		velocities.append(velocity)
-	fluid.add_points_and_velocities(points, velocities)
+	fluid.spawn_particles(points, velocities)
 	released.emit(points.size())
 
 
 ## Particle spawn positions, local to this node and centered on it.
 func get_particle_offsets() -> PackedVector2Array:
-	var spacing := 2.0 * _particle_radius()
+	var spacing := 2.0 * MudFluid2D.particle_radius()
 	var offsets := PackedVector2Array()
 	match shape:
 		BlobShape.RECTANGLE:
@@ -87,13 +87,9 @@ func _run_schedule() -> void:
 		release()
 
 
-func _find_fluid() -> Fluid2D:
+func _find_fluid() -> MudFluid2D:
 	var level := Level2D.find_level(self)
 	return level.fluid if level != null else null
-
-
-func _particle_radius() -> float:
-	return float(ProjectSettings.get_setting("physics/rapier/fluid/fluid_particle_radius_2d", 20.0))
 
 
 func _draw() -> void:
@@ -101,7 +97,7 @@ func _draw() -> void:
 		return
 	var preview_color := Color(0.55, 0.35, 0.15, 0.6)
 	for offset in get_particle_offsets():
-		draw_circle(offset, _particle_radius(), preview_color)
+		draw_circle(offset, MudFluid2D.particle_radius(), preview_color)
 	if launch_velocity != Vector2.ZERO:
 		# Arrow shows roughly where the blob travels in the first half second.
 		draw_line(Vector2.ZERO, launch_velocity * 0.5, Color.ORANGE, 4.0)

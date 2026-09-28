@@ -14,7 +14,7 @@ albedo_color = Color(0.69152474, 0.45594078, 0.41145787, 1)
 albedo_texture = SubResource("ViewportTexture_epb4y")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_776o0"]
-size = Vector2(30, 40)
+size = Vector2(10, 40)
 
 [node name="River" type="Node3D" unique_id=15531161]
 script = ExtResource("1_v17h0")

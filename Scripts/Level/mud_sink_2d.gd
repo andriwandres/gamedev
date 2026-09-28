@@ -39,7 +39,7 @@ func _physics_process(_delta: float) -> void:
 	var arrived := level.fluid.get_particles_in_aabb(get_global_zone())
 	if arrived.is_empty():
 		return
-	level.fluid.delete_points(arrived)
+	level.fluid.remove_particles(arrived)
 	total_consumed += arrived.size()
 	consumed.emit(arrived.size(), total_consumed)
 	level.add_consumed_mud(arrived.size())

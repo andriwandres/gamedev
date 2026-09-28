@@ -40,7 +40,7 @@ var mud_consumed := 0
 
 ## The mud simulation this level feeds. Bound by the stage, or by the level
 ## itself when run on its own.
-var fluid: Fluid2D
+var fluid: MudFluid2D
 
 
 func _ready() -> void:
@@ -95,7 +95,7 @@ func _on_area_changed() -> void:
 func _attach_sim_rig() -> void:
 	var rig: Node = load(SIM_RIG_PATH).instantiate()
 	add_child(rig)
-	fluid = rig.find_children("*", "Fluid2D", true, false).front()
+	fluid = rig.find_children("*", "Fluid2D", true, false).front() as MudFluid2D
 	_frame_camera(rig.find_children("*", "Camera2D", true, false).front())
 	propagate_call(&"fit_to_river_area", [get_area_2d()])
 

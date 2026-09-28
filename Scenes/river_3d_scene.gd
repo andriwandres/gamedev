@@ -66,7 +66,7 @@ func _spawn_level() -> void:
 	if _level == null:
 		push_error("level_scene must have a Level2D as its root.")
 		return
-	_level.fluid = _find_first(Fluid2D)
+	_level.fluid = _find_first(MudFluid2D)
 	_level.area_changed.connect(_sync)
 	_sub_viewport.add_child(_level)
 	level_changed.emit(_level)

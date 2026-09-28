@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://bq4ivg1egywlo"]
 
 [ext_resource type="Texture2D" uid="uid://cho3shol3rky2" path="res://addons/godot-rapier2d/Radial2D.svg" id="1_r2t0d"]
-[ext_resource type="Script" uid="uid://dh4un6t2ofc3o" path="res://Scripts/Fluid/viewport_fluid_2d_shader_renderer.gd" id="1_sdcln"]
-[ext_resource type="Material" uid="uid://cysnk7s2ll173" path="res://addons/godot-rapier2d/water_shader.tres" id="2_r2t0d"]
+[ext_resource type="Script" path="res://Scripts/Fluid/mud_surface_renderer_2d.gd" id="1_surface"]
+[ext_resource type="Resource" path="res://Assets/Mud/1/mud_surface.tres" id="2_mud_look"]
+[ext_resource type="Script" path="res://Scripts/Fluid/mud_fluid_2d.gd" id="2_mud_fluid"]
 [ext_resource type="Script" uid="uid://c70amrnbdymwf" path="res://addons/godot-rapier2d/fluid_2d_renderer.gd" id="2_y78by"]
 [ext_resource type="Script" uid="uid://ch11ivcuwv25x" path="res://Scripts/River/river_walls_2d.gd" id="3_walls"]
 
@@ -36,6 +37,7 @@ mesh = SubResource("ArrayMesh_y78by")
 [node name="River" type="Node2D" unique_id=1525033201]
 
 [node name="Fluid2D" type="Fluid2D" parent="." unique_id=1170199389]
+script = ExtResource("2_mud_fluid")
 effects = Array[Resource]([SubResource("FluidEffect2DElasticity_v17h0"), SubResource("FluidEffect2DSurfaceTensionAKINCI_2es3b")])
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=50149362]
@@ -51,8 +53,8 @@ script = ExtResource("2_y78by")
 fluid = NodePath("../Fluid2D")
 metadata/_custom_type_script = "uid://c70amrnbdymwf"
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1088979395 node_paths=PackedStringArray("fluid", "camera")]
-script = ExtResource("1_sdcln")
+[node name="MudSurface" type="CanvasLayer" parent="." unique_id=1088979395 node_paths=PackedStringArray("fluid", "camera")]
+script = ExtResource("1_surface")
 fluid = NodePath("../Fluid2D")
 camera = NodePath("../Camera2D")
-water_material = ExtResource("2_r2t0d")
+surface = ExtResource("2_mud_look")

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TerrainSurface" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Level/terrain_surface.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://hac5a1ihixm6" path="res://Assets/Ground/2/2_diffuseOriginal.bmp" id="2_albedo"]
+[ext_resource type="Texture2D" uid="uid://ck223yuil35bj" path="res://Assets/Ground/2/2_height.bmp" id="3_height"]
+[ext_resource type="Texture2D" uid="uid://clvvciq82ph7x" path="res://Assets/Ground/2/2_ao.bmp" id="4_ao"]
+
+[resource]
+script = ExtResource("1_script")
+albedo = ExtResource("2_albedo")
+height = ExtResource("3_height")
+ambient_occlusion = ExtResource("4_ao")

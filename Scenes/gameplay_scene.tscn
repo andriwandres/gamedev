@@ -1,24 +1,28 @@
 [gd_scene format=3 uid="uid://dvf20ckp7w5hy"]
 
 [ext_resource type="PackedScene" uid="uid://cji7oil0xk2xa" path="res://Scenes/river_3d_scene.tscn" id="1_epb4y"]
-[ext_resource type="Texture2D" uid="uid://t82mx0rt7rpo" path="res://Assets/Grass_20-512x512.png" id="1_t5vvb"]
+[ext_resource type="Texture2D" uid="uid://inlh1trfk5jt" path="res://Assets/Grass/7/7_diffuseOriginal.bmp" id="1_ykw5v"]
+[ext_resource type="Texture2D" uid="uid://dm3df5bcyao50" path="res://Assets/Grass/7/7_metallic.bmp" id="2_u0hpe"]
 [ext_resource type="Script" uid="uid://dhuihlm7u028w" path="res://Scripts/Level/level_2d.gd" id="2_y365c"]
+[ext_resource type="Texture2D" uid="uid://bcuh6anx00tp2" path="res://Assets/Grass/17/17_height.bmp" id="2_ykw5v"]
 [ext_resource type="Script" uid="uid://dpxia7vvg2d7y" path="res://Scripts/UI/mud_counter_label.gd" id="3_counter"]
 [ext_resource type="Script" uid="uid://bas2dwkchw4b3" path="res://Scripts/Level/mud_burst_2d.gd" id="3_t5vvb"]
 [ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="4_6ksri"]
+[ext_resource type="Texture2D" uid="uid://dwsoftklenb27" path="res://Assets/Grass/17/17_normal.bmp" id="4_krv6g"]
 [ext_resource type="Script" uid="uid://cavhoyl3jafec" path="res://Scripts/Level/mud_sink_2d.gd" id="5_uwf40"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m8blu"]
 albedo_color = Color(0.28242135, 0.46286952, 0.40373722, 1)
-albedo_texture = ExtResource("1_t5vvb")
+albedo_texture = ExtResource("1_ykw5v")
+metallic = 1.0
 metallic_specular = 0.12
-roughness = 0.8
-roughness_texture = ExtResource("1_t5vvb")
+metallic_texture = ExtResource("2_u0hpe")
 roughness_texture_channel = 1
-normal_scale = -9.55
-normal_texture = ExtResource("1_t5vvb")
-ao_enabled = true
+normal_enabled = true
+normal_texture = ExtResource("4_krv6g")
 ao_light_affect = 0.19
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_ykw5v")
 uv1_scale = Vector3(6.06, 6.06, 6.06)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_j87mf"]
@@ -53,7 +57,6 @@ ambient_light_color = Color(0.7058824, 0.3764706, 0.2, 1)
 glow_enabled = true
 glow_intensity = 1.21
 glow_bloom = 0.24
-fog_enabled = true
 fog_light_energy = 0.6
 volumetric_fog_albedo = Color(0.3171325, 0.41097432, 0.5389892, 1)
 
