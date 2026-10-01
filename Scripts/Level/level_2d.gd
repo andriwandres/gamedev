@@ -35,6 +35,13 @@ const SIM_RIG_PATH := "res://Scenes/river_2d_scene.tscn"
 ## How much mud (in particles) may reach a MudSink2D before the level is lost.
 @export var mud_limit := 30
 
+@export_group("Cursor Spawning")
+## Manual burst used for clicks.
+@export var cursor_burst: MudBurst2D
+## Maximum live particles allowed.
+@export_range(1, 10000, 1, "or_greater") var max_cursor_particles := 1000
+@export_flags_2d_physics var spawn_collision_mask := 1
+
 ## Mud that has reached a MudSink2D so far.
 var mud_consumed := 0
 
@@ -42,14 +49,76 @@ var mud_consumed := 0
 ## itself when run on its own.
 var fluid: MudFluid2D
 
+var _pending_cursor_spawns: Array[Vector2] = []
+
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	_apply_gravity()
 	var runs_standalone := get_parent() == get_tree().root
+	# The 3D stage maps input for embedded levels. F6 uses the 2D camera directly.
+	set_process_unhandled_input(runs_standalone)
 	if fluid == null and runs_standalone:
 		_attach_sim_rig()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if Engine.is_editor_hint() or not event is InputEventMouseButton:
+		return
+	if event.is_action_pressed(&"spawn_liquid"):
+		var world_position: Vector2 = get_canvas_transform().affine_inverse() * event.position
+		if request_cursor_spawn(world_position):
+			get_viewport().set_input_as_handled()
+
+
+## Queues a world-space 2D position; physics queries and spawning run next tick.
+func request_cursor_spawn(world_position: Vector2) -> bool:
+	if Engine.is_editor_hint() or cursor_burst == null or fluid == null:
+		return false
+	if not world_position.is_finite() or not get_area_2d().has_point(world_position):
+		return false
+	_pending_cursor_spawns.append(world_position)
+	return true
+
+
+func _physics_process(_delta: float) -> void:
+	if Engine.is_editor_hint() or _pending_cursor_spawns.is_empty():
+		return
+	if cursor_burst == null or fluid == null:
+		_pending_cursor_spawns.clear()
+		return
+	var offsets := cursor_burst.get_particle_offsets()
+	var particle_count := fluid.points.size()
+	for world_position in _pending_cursor_spawns:
+		if particle_count + offsets.size() > max_cursor_particles:
+			break
+		cursor_burst.global_position = world_position
+		if not _cursor_burst_fits(offsets):
+			continue
+		cursor_burst.release()
+		# Reserve this tick's spawns even if the physics backend updates points later.
+		particle_count += offsets.size()
+	_pending_cursor_spawns.clear()
+
+
+func _cursor_burst_fits(offsets: PackedVector2Array) -> bool:
+	var particle_shape := CircleShape2D.new()
+	particle_shape.radius = MudFluid2D.particle_radius()
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = particle_shape
+	query.collision_mask = spawn_collision_mask
+	query.collide_with_areas = false
+	var safe_area := get_area_2d().grow(-particle_shape.radius)
+	var space := get_world_2d().direct_space_state
+	for offset in offsets:
+		var point := cursor_burst.to_global(offset)
+		if not safe_area.has_point(point):
+			return false
+		query.transform = Transform2D(0.0, point)
+		if not space.intersect_shape(query, 1).is_empty():
+			return false
+	return true
 
 
 ## The Level2D that `node` belongs to, or null.

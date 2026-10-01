@@ -1,7 +1,7 @@
 @tool
 class_name MudBurst2D
 extends Node2D
-## Releases a single blob of mud after `delay`, optionally repeating.
+## Releases a blob manually with release(), or on a schedule when autostart is on.
 ## The dots in the editor show exactly where the particles will spawn.
 
 signal released(particle_count: int)
@@ -26,6 +26,8 @@ enum BlobShape { RECTANGLE, CIRCLE }
 		queue_redraw()
 
 @export_group("Timing")
+## Start the release schedule when the level loads. Turn off for cursor bursts.
+@export var autostart := true
 ## Seconds after the level starts before the first release.
 @export var delay := 0.0
 ## Extra releases after the first one.
@@ -42,7 +44,7 @@ enum BlobShape { RECTANGLE, CIRCLE }
 
 
 func _ready() -> void:
-	if not Engine.is_editor_hint():
+	if not Engine.is_editor_hint() and autostart:
 		_run_schedule()
 
 
