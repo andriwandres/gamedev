@@ -43,6 +43,38 @@ func get_level() -> Level2D:
 	return _level
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if Engine.is_editor_hint() or _level == null or not event is InputEventMouseButton:
+		return
+	if not event.is_action_pressed(&"spawn_liquid"):
+		return
+	var world_position: Variant = screen_to_level_position(event.position)
+	if world_position != null and _level.request_cursor_spawn(world_position):
+		get_viewport().set_input_as_handled()
+
+
+## Maps a viewport position onto the level, or returns null when the ray misses.
+func screen_to_level_position(screen_position: Vector2) -> Variant:
+	var camera := get_viewport().get_camera_3d()
+	var plane_mesh := _mesh_instance.mesh as PlaneMesh
+	if camera == null or plane_mesh == null:
+		return null
+	# Intersect in mesh-local space so the stage and mesh transforms both apply.
+	var inverse := _mesh_instance.global_transform.affine_inverse()
+	var origin := inverse * camera.project_ray_origin(screen_position)
+	var direction := inverse.basis * camera.project_ray_normal(screen_position)
+	var plane := Plane(Vector3.UP, plane_mesh.center_offset.y)
+	var hit: Variant = plane.intersects_ray(origin, direction)
+	if hit == null:
+		return null
+	var local_point: Vector3 = hit - plane_mesh.center_offset
+	var uv := Vector2(local_point.x, local_point.z) / plane_mesh.size + Vector2(0.5, 0.5)
+	if not Rect2(Vector2.ZERO, Vector2.ONE).has_point(uv):
+		return null
+	var area := get_projected_area_2d()
+	return area.position + uv * area.size
+
+
 ## Level size in meters, which is also the plane size.
 func get_size_meters() -> Vector2:
 	return _level.size if _level else FALLBACK_SIZE

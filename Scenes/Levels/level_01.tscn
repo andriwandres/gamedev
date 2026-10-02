@@ -5,21 +5,30 @@
 [ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="4_terrain"]
 [ext_resource type="Script" uid="uid://cavhoyl3jafec" path="res://Scripts/Level/mud_sink_2d.gd" id="5_sink"]
 
-[node name="Level01" type="Node2D" unique_id=556361835]
+[node name="Level01" type="Node2D" unique_id=556361835 node_paths=PackedStringArray("cursor_burst")]
 script = ExtResource("1_level")
 size = Vector2(30, 40)
 gravity_scale = 0.35
+cursor_burst = NodePath("CursorBurst")
 
 [node name="OpeningBurst" type="Node2D" parent="." unique_id=450454348]
 position = Vector2(200, 100)
 script = ExtResource("2_burst")
+autostart = false
 
 [node name="LateBurst" type="Node2D" parent="." unique_id=1168492288]
 position = Vector2(290, 140)
 script = ExtResource("2_burst")
 shape = 1
+autostart = false
 delay = 4.0
 launch_velocity = Vector2(-150, 0)
+
+[node name="CursorBurst" type="Node2D" parent="."]
+position = Vector2(600, 200)
+script = ExtResource("2_burst")
+shape = 1
+autostart = false
 
 [node name="Boulder" type="Polygon2D" parent="." unique_id=388245298]
 texture_repeat = 2
