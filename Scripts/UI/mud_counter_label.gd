@@ -22,6 +22,4 @@ func _watch_level(level: Level2D) -> void:
 
 
 func _refresh() -> void:
-	text = "Mud reached you: %d / %d" % [_level.mud_consumed, _level.mud_limit]
-	if _level.mud_consumed >= _level.mud_limit:
-		text += "\nThe mudslide got through!"
+	text = "Score: %d " % [_level.mud_consumed]
