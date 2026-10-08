@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://ipksoo16n2jl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dbq10"]
+size = Vector2(258, 64)
+
+[sub_resource type="QuadMesh" id="QuadMesh_776o0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_776o0"]
+size = Vector2(38.527885, 213)
+
+[node name="House" type="Node2D" unique_id=855534995]
+
+[node name="RigidBody2D3" type="RigidBody2D" parent="." unique_id=604355200 groups=["house"]]
+position = Vector2(2, -139)
+mass = 0.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D3" unique_id=1270101256]
+position = Vector2(3, -1)
+shape = SubResource("RectangleShape2D_dbq10")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="RigidBody2D3" unique_id=2075626670]
+position = Vector2(6.0000076, -2.000061)
+scale = Vector2(-267.3949, 65.257286)
+mesh = SubResource("QuadMesh_776o0")
+
+[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=147372306 groups=["house"]]
+position = Vector2(-105, 26)
+mass = 0.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=1593817729]
+position = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_776o0")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="RigidBody2D" unique_id=68677691]
+position = Vector2(3.0517578e-05, -6)
+scale = Vector2(-48.864014, 229.90971)
+mesh = SubResource("QuadMesh_776o0")
+
+[node name="RigidBody2D2" type="RigidBody2D" parent="." unique_id=274551452 groups=["house"]]
+position = Vector2(115, 19)
+mass = 0.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D2" unique_id=1252563760]
+position = Vector2(1, 2)
+shape = SubResource("RectangleShape2D_776o0")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="RigidBody2D2" unique_id=1102846051]
+position = Vector2(3.8146973e-05, 5)
+scale = Vector2(-54.262516, 229.90971)
+mesh = SubResource("QuadMesh_776o0")

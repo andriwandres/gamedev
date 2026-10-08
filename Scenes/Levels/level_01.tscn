@@ -4,11 +4,15 @@
 [ext_resource type="Script" uid="uid://bas2dwkchw4b3" path="res://Scripts/Level/mud_burst_2d.gd" id="2_burst"]
 [ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="4_terrain"]
 [ext_resource type="Script" uid="uid://cavhoyl3jafec" path="res://Scripts/Level/mud_sink_2d.gd" id="5_sink"]
+[ext_resource type="PackedScene" uid="uid://xx0i8ad01fir" path="res://Scenes/Levels/person_pill.tscn" id="5_taws2"]
+[ext_resource type="PackedScene" uid="uid://ipksoo16n2jl" path="res://Scenes/Levels/House.tscn" id="6_mb1if"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_776o0"]
-size = Vector2(108, 46)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y8lb2"]
+size = Vector2(1974, 50)
 
-[sub_resource type="QuadMesh" id="QuadMesh_776o0"]
+[sub_resource type="BoxMesh" id="BoxMesh_qh1ei"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wf6s8"]
 
 [node name="Level01" type="Node2D" unique_id=556361835 node_paths=PackedStringArray("cursor_burst")]
 script = ExtResource("1_level")
@@ -63,20 +67,26 @@ polygon = PackedVector2Array(293, 183, -50, 66, 137, 286, 472, 268, 461, 7)
 script = ExtResource("4_terrain")
 metadata/_custom_type_script = "uid://dgaefv0ribnd6"
 
-[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=1149492900]
-mass = 0.1
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=1872622573]
-position = Vector2(496.31482, 1875.9868)
-shape = SubResource("RectangleShape2D_776o0")
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="RigidBody2D" unique_id=204662713]
-position = Vector2(499.31482, 1875.9868)
-scale = Vector2(-226.62958, 85.973694)
-mesh = SubResource("QuadMesh_776o0")
-
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=997526886]
+position = Vector2(7, 31)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1876381349]
+position = Vector2(1014, 2298)
+shape = SubResource("RectangleShape2D_y8lb2")
+debug_color = Color(0.98236877, 0, 0.3670022, 0.41960785)
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D" unique_id=958578031]
+mesh = SubResource("BoxMesh_qh1ei")
+texture = SubResource("PlaceholderTexture2D_wf6s8")
+
+[node name="RigidBody2D - Pill" parent="." unique_id=699748753 instance=ExtResource("5_taws2")]
+position = Vector2(582, 2216)
+
+[node name="House" parent="." unique_id=855534995 instance=ExtResource("6_mb1if")]
+position = Vector2(587, 2208)
+
+[node name="RigidBody2D - Pill2" parent="." unique_id=1465199155 instance=ExtResource("5_taws2")]
+position = Vector2(1512, 2219)
+
+[node name="House2" parent="." unique_id=487733332 instance=ExtResource("6_mb1if")]
+position = Vector2(1517, 2217)

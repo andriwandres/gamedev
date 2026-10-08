@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://xx0i8ad01fir"]
+
+[ext_resource type="Script" uid="uid://bjuno188nsiss" path="res://Scenes/Levels/RigidBody2dPill.cs" id="1_kdcdf"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_81qf4"]
+radius = 39.0
+height = 130.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_81qf4"]
+
+[node name="RigidBody2D - Pill" type="RigidBody2D" unique_id=699748753]
+script = ExtResource("1_kdcdf")
+ForceThreshold = 5.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=867931613]
+position = Vector2(6, -6)
+shape = SubResource("CapsuleShape2D_81qf4")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=642998510]
+position = Vector2(4.999999, 1.0000002)
+scale = Vector2(78.24999, 61.249985)
+mesh = SubResource("CapsuleMesh_81qf4")
