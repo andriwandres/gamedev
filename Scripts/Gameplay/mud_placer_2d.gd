@@ -3,9 +3,10 @@ extends Node
 ## Lets the player place mud in the level's placement zones.
 ##
 ## A ghost of `blob` follows the mouse, kept inside the nearest placement zone,
-## and shows whether the blob fits there. Pressing manifests it; holding keeps
-## placing blobs wherever there is room, so dragging paints mud and holding
-## still pours it. Every blob costs its particle count from the mud budget.
+## and shows whether the blob fits there. Pressing manifests it, even on top
+## of mud already there. Holding keeps placing blobs, but only where there is
+## no mud yet, so dragging paints mud and holding still pours it. Every blob
+## costs its particle count from the mud budget.
 
 signal mud_left_changed(mud_left: int)
 
@@ -15,7 +16,8 @@ signal mud_left_changed(mud_left: int)
 @export var ghost: BlobGhost2D
 ## Physics layers a blob may not overlap when placed.
 @export_flags_2d_physics var blocking_mask := 1
-## Shortest time between two blobs while holding, in seconds.
+## Shortest time between two blobs while holding, in seconds. A new press
+## always places right away.
 @export_range(0.0, 1.0, 0.01) var placement_interval := 0.06
 
 var mud_left := 0:
@@ -70,12 +72,15 @@ func _physics_process(delta: float) -> void:
 	if target == null:
 		return
 	blob.global_position = target
+	# A new press places anywhere free of obstacles. Repeats while holding also
+	# keep clear of mud, so they don't pile onto the blob just placed.
+	var is_repeat := _is_holding and not _has_pending_press
 	var offsets := blob.get_particle_offsets()
-	var can_place := offsets.size() <= mud_left and _blob_fits(offsets)
+	var can_place := offsets.size() <= mud_left and _blob_fits(offsets, is_repeat)
 	ghost.is_valid = can_place
-	var wants_to_place := _is_holding or _has_pending_press
+	var wants_to_place := _has_pending_press or (is_repeat and _cooldown <= 0.0)
 	_has_pending_press = false
-	if can_place and wants_to_place and _cooldown <= 0.0:
+	if can_place and wants_to_place:
 		blob.release()
 		mud_left -= offsets.size()
 		_cooldown = placement_interval
@@ -90,9 +95,9 @@ func _cursor_target() -> Variant:
 	return _level.snap_to_placement_zones(world_pointer)
 
 
-## True if no particle of the blob would end up inside an obstacle, inside
-## mud already placed or outside the level.
-func _blob_fits(offsets: PackedVector2Array) -> bool:
+## True if no particle of the blob would end up inside an obstacle or outside
+## the level, nor, with `avoid_mud`, inside mud already placed.
+func _blob_fits(offsets: PackedVector2Array, avoid_mud: bool) -> bool:
 	var particle_radius := MudFluid2D.particle_radius()
 	var particle_shape := CircleShape2D.new()
 	particle_shape.radius = particle_radius
@@ -107,7 +112,7 @@ func _blob_fits(offsets: PackedVector2Array) -> bool:
 		var point := blob.to_global(offset)
 		if not level_bounds.has_point(point):
 			return false
-		if not fluid.get_particles_in_circle(fluid.to_local(point), 2.0 * particle_radius).is_empty():
+		if avoid_mud and not fluid.get_particles_in_circle(fluid.to_local(point), 2.0 * particle_radius).is_empty():
 			return false
 		query.transform = Transform2D(0.0, point)
 		if not space.intersect_shape(query, 1).is_empty():
