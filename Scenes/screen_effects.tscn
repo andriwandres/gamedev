@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Environment" path="res://Assets/Effects/environment.tres" id="1_env"]
+[ext_resource type="Material" path="res://Assets/Effects/screen_grade.tres" id="2_grade"]
+
+[node name="ScreenEffects" type="CanvasLayer"]
+layer = 5
+
+[node name="Glow" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_env")
+
+[node name="Grade" type="ColorRect" parent="."]
+material = ExtResource("2_grade")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

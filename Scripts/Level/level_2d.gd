@@ -2,16 +2,16 @@
 class_name Level2D
 extends Node2D
 ## Root of a level. Everything inside is designed in 2D (Wall2D, Terrain2D,
-## MudBurst2D, ...). The level owns its size; the 3D stage adapts to it.
-##
-## Run a level scene on its own (F6) to test it: it then brings its own mud
-## simulation and camera.
+## MudBurst2D, ...). The level owns its size and brings its own mud simulation
+## and camera, which it keeps fitted to the window. That makes it playable both
+## inside a LevelStage2D and on its own (F6).
 
 signal area_changed
 signal mud_consumed_changed(total: int, limit: int)
 signal mud_limit_reached
 
-const SIM_RIG_PATH := "res://Scenes/river_2d_scene.tscn"
+## Mud simulation, camera, walls and backdrop every level plays with.
+const RIG_PATH := "res://Scenes/level_rig.tscn"
 
 ## Main level size in meters. The cursor area can extend the plane upstream.
 @export var size := Vector2(10, 40):
@@ -50,10 +50,11 @@ const SIM_RIG_PATH := "res://Scenes/river_2d_scene.tscn"
 ## Mud that has reached a MudSink2D so far.
 var mud_consumed := 0
 
-## The mud simulation this level feeds. Bound by the stage, or by the level
-## itself when run on its own.
+## The mud simulation this level feeds. Created by the level unless bound
+## before it enters the tree.
 var fluid: MudFluid2D
 
+var _camera: Camera2D
 var _pending_cursor_spawns: Array[Vector2] = []
 
 
@@ -61,11 +62,10 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	_apply_gravity()
-	var runs_standalone := get_parent() == get_tree().root
-	# The 3D stage maps input for embedded levels. F6 uses the 2D camera directly.
-	set_process_unhandled_input(runs_standalone)
-	if fluid == null and runs_standalone:
-		_attach_sim_rig()
+	if fluid == null:
+		_attach_rig()
+	get_viewport().size_changed.connect(_fit_to_area)
+	_fit_to_area()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -171,8 +171,7 @@ func _draw() -> void:
 
 
 func _apply_gravity() -> void:
-	# Each stage renders into its own SubViewport, which has its own physics
-	# space, so this only affects this level.
+	# Sets the gravity of the whole 2D world this level plays in.
 	if Engine.is_editor_hint() or not is_inside_tree():
 		return
 	var default_gravity := float(ProjectSettings.get_setting("physics/2d/default_gravity", 980.0))
@@ -182,19 +181,31 @@ func _apply_gravity() -> void:
 func _on_area_changed() -> void:
 	queue_redraw()
 	area_changed.emit()
+	if not Engine.is_editor_hint() and is_node_ready():
+		_fit_to_area()
 
 
-func _attach_sim_rig() -> void:
-	var rig: Node = load(SIM_RIG_PATH).instantiate()
+func _attach_rig() -> void:
+	var rig: Node = load(RIG_PATH).instantiate()
 	add_child(rig)
 	fluid = rig.find_children("*", "Fluid2D", true, false).front() as MudFluid2D
-	_frame_camera(rig.find_children("*", "Camera2D", true, false).front())
-	propagate_call(&"fit_to_river_area", [get_area_2d()])
+	_camera = rig.find_children("*", "Camera2D", true, false).front() as Camera2D
 
 
-func _frame_camera(camera: Camera2D) -> void:
+## Fits the camera and every area-aware node (walls, sinks, ...) to the level.
+func _fit_to_area() -> void:
 	var area := get_area_2d()
+	# Any node in the level can follow its size by implementing
+	# fit_to_level_area(area: Rect2).
+	propagate_call(&"fit_to_level_area", [area])
+	if _camera:
+		_frame_camera(_camera, area)
+
+
+## Zooms so the whole area is visible, centered in the window.
+func _frame_camera(camera: Camera2D, area: Rect2) -> void:
 	var fit := get_viewport().get_visible_rect().size / area.size
-	camera.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
-	camera.global_position = area.position
+	camera.anchor_mode = Camera2D.ANCHOR_MODE_DRAG_CENTER
+	camera.rotation = 0.0
+	camera.global_position = area.get_center()
 	camera.zoom = Vector2.ONE * minf(fit.x, fit.y)

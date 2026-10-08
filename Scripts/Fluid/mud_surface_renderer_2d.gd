@@ -9,8 +9,7 @@ extends CanvasLayer
 ## whose material, mud_surface.gdshader, combines both into the final surface.
 ## The light is shared with the terrain, see lighting_2d.gdshaderinc.
 ##
-## Works in any viewport, e.g. a SubViewport projected onto a 3D mesh: it covers
-## the viewport it lives in and mirrors that viewport's camera.
+## It covers the viewport it lives in and mirrors that viewport's camera.
 
 const SPLAT_SHADER := preload("res://Scripts/Fluid/Shaders/mud_splat.gdshader")
 const SURFACE_SHADER := preload("res://Scripts/Fluid/Shaders/mud_surface.gdshader")
@@ -78,6 +77,9 @@ func _create_splat_pass(pass_name: String, splat_material: ShaderMaterial, paren
 	# Summed splat weights go well above 1, which an 8-bit target would clip.
 	viewport.use_hdr_2d = true
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	# The passes hold data, not colors: keep the screen's WorldEnvironment
+	# (glow, background) out of them.
+	viewport.own_world_3d = true
 	parent.add_child(viewport)
 
 	var splats := MultiMeshInstance2D.new()

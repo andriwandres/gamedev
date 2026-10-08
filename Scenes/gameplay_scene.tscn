@@ -1,78 +1,21 @@
 [gd_scene format=3 uid="uid://dvf20ckp7w5hy"]
 
-[ext_resource type="PackedScene" uid="uid://cji7oil0xk2xa" path="res://Scenes/river_3d_scene.tscn" id="1_epb4y"]
-[ext_resource type="Texture2D" uid="uid://inlh1trfk5jt" path="res://Assets/Grass/7/7_diffuseOriginal.bmp" id="1_ykw5v"]
+[ext_resource type="Script" path="res://Scripts/Stage/level_stage_2d.gd" id="1_stage"]
 [ext_resource type="PackedScene" uid="uid://cx1y52bsd03el" path="res://Scenes/Levels/level_01.tscn" id="2_level"]
-[ext_resource type="Texture2D" uid="uid://dm3df5bcyao50" path="res://Assets/Grass/7/7_metallic.bmp" id="2_u0hpe"]
-[ext_resource type="Texture2D" uid="uid://bcuh6anx00tp2" path="res://Assets/Grass/17/17_height.bmp" id="2_ykw5v"]
 [ext_resource type="Script" uid="uid://dpxia7vvg2d7y" path="res://Scripts/UI/mud_counter_label.gd" id="3_counter"]
-[ext_resource type="Texture2D" uid="uid://dwsoftklenb27" path="res://Assets/Grass/17/17_normal.bmp" id="4_krv6g"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m8blu"]
-albedo_color = Color(0.28242135, 0.46286952, 0.40373722, 1)
-albedo_texture = ExtResource("1_ykw5v")
-metallic = 1.0
-metallic_specular = 0.12
-metallic_texture = ExtResource("2_u0hpe")
-roughness_texture_channel = 1
-normal_enabled = true
-normal_texture = ExtResource("4_krv6g")
-ao_light_affect = 0.19
-heightmap_enabled = true
-heightmap_texture = ExtResource("2_ykw5v")
-uv1_scale = Vector3(6.06, 6.06, 6.06)
+[node name="GameplayScene" type="Node2D" unique_id=1076854205]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_j87mf"]
-size = Vector2(120, 90)
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eds3f"]
-
-[sub_resource type="Sky" id="Sky_eds3f"]
-sky_material = SubResource("ProceduralSkyMaterial_eds3f")
-
-[sub_resource type="Environment" id="Environment_776o0"]
-background_mode = 2
-background_color = Color(0.5884179, 0.5233473, 0.67652386, 1)
-sky = SubResource("Sky_eds3f")
-ambient_light_source = 2
-ambient_light_color = Color(0.7058824, 0.3764706, 0.2, 1)
-glow_enabled = true
-glow_intensity = 1.21
-glow_bloom = 0.24
-fog_light_energy = 0.6
-volumetric_fog_albedo = Color(0.3171325, 0.41097432, 0.5389892, 1)
-
-[node name="GameplayScene" type="Node3D" unique_id=1076854205]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1146657663]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 3.4777737, -21.098984)
-material_override = SubResource("StandardMaterial3D_m8blu")
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_j87mf")
-
-[node name="River" parent="." unique_id=15531161 instance=ExtResource("1_epb4y")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 6.422366, -19.116398)
+[node name="Stage" type="Node2D" parent="." unique_id=15531161]
+script = ExtResource("1_stage")
 level_scene = ExtResource("2_level")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=945019305]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07146168, 10.5966015, 24.614546)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=696127480]
-environment = SubResource("Environment_776o0")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2040173350]
-transform = Transform3D(1, 0, 0, 0, 0.65501666, 0.7556144, 0, -0.7556144, 0.65501666, 0, 24.591305, 15.24374)
-shadow_enabled = true
-
-[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1928608235]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.189881, 0)
-visible = false
-
 [node name="Hud" type="CanvasLayer" parent="." unique_id=1487582743]
+layer = 10
 
 [node name="MudCounter" type="Label" parent="Hud" unique_id=1761934515 node_paths=PackedStringArray("stage")]
 offset_left = 16.0
 offset_top = 16.0
 theme_override_font_sizes/font_size = 28
 script = ExtResource("3_counter")
-stage = NodePath("../../River")
+stage = NodePath("../../Stage")

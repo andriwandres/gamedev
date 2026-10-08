@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TerrainSurface" format=3]
+
+[ext_resource type="Script" uid="uid://dy7x0rnvbe6c2" path="res://Scripts/Level/terrain_surface.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://inlh1trfk5jt" path="res://Assets/Grass/7/7_diffuseOriginal.bmp" id="2_albedo"]
+[ext_resource type="Texture2D" uid="uid://v42s6dg55q77" path="res://Assets/Grass/7/7_height.bmp" id="3_height"]
+[ext_resource type="Texture2D" uid="uid://fiaue6l4t4y2" path="res://Assets/Grass/7/7_ao.bmp" id="4_ao"]
+
+[resource]
+script = ExtResource("1_script")
+albedo = ExtResource("2_albedo")
+height = ExtResource("3_height")
+ambient_occlusion = ExtResource("4_ao")
+tile_size = 512.0
+tint = Color(0.28242135, 0.46286952, 0.40373722, 1)
+ambient_occlusion_strength = 0.5
+edge_darkening = 0.0
+detail_height = 3.0
+wetness = 0.02

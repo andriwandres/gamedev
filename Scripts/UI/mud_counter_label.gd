@@ -2,7 +2,7 @@ class_name MudCounterLabel
 extends Label
 ## Shows how much mud has reached the bottom of the level the stage is playing.
 
-@export var stage: RiverStage3D
+@export var stage: LevelStage2D
 
 var _level: Level2D
 

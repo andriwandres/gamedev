@@ -1,13 +1,13 @@
 @tool
-class_name RiverWalls2D
+class_name LevelWalls2D
 extends StaticBody2D
-## Solid walls on the left and right ends of the river area.
+## Solid walls on the left and right ends of the level area.
 ##
-## River3D pushes its projected area in through `fit_to_river_area`, so the
-## walls follow the river size. They sit just outside the area, so they never
-## cover visible river.
+## The level pushes its area in through `fit_to_level_area`, so the walls
+## follow the level size. They sit just outside the area, so they never
+## cover the visible level.
 
-## River area in global 2D coordinates. Set automatically when used inside River3D.
+## Level area in global 2D coordinates. Set automatically when used inside a Level2D.
 @export var area := Rect2(0, 0, 1600, 400):
 	set(value):
 		area = value
@@ -30,9 +30,9 @@ func _ready() -> void:
 	_rebuild()
 
 
-## Called by River3D whenever the projected area changes.
-func fit_to_river_area(river_area: Rect2) -> void:
-	area = river_area
+## Called by the level whenever its area changes.
+func fit_to_level_area(level_area: Rect2) -> void:
+	area = level_area
 
 
 func _create_wall(wall_name: String) -> CollisionShape2D:

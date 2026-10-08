@@ -2,10 +2,33 @@
 
 [ext_resource type="Texture2D" uid="uid://cho3shol3rky2" path="res://addons/godot-rapier2d/Radial2D.svg" id="1_r2t0d"]
 [ext_resource type="Script" uid="uid://cuhrn55oea2up" path="res://Scripts/Fluid/mud_surface_renderer_2d.gd" id="1_surface"]
+[ext_resource type="Shader" uid="uid://cnvl23tvd0788" path="res://Scripts/Level/Shaders/terrain_surface.gdshader" id="1_tl576"]
+[ext_resource type="Texture2D" uid="uid://inlh1trfk5jt" path="res://Assets/Grass/7/7_diffuseOriginal.bmp" id="2_j5tsp"]
 [ext_resource type="Script" uid="uid://b00xhr3pj46jl" path="res://Scripts/Fluid/mud_fluid_2d.gd" id="2_mud_fluid"]
 [ext_resource type="Resource" path="res://Assets/Mud/1/mud_surface.tres" id="2_mud_look"]
 [ext_resource type="Script" uid="uid://c70amrnbdymwf" path="res://addons/godot-rapier2d/fluid_2d_renderer.gd" id="2_y78by"]
-[ext_resource type="Script" uid="uid://ch11ivcuwv25x" path="res://Scripts/River/river_walls_2d.gd" id="3_walls"]
+[ext_resource type="Texture2D" uid="uid://fiaue6l4t4y2" path="res://Assets/Grass/7/7_ao.bmp" id="3_jrl0a"]
+[ext_resource type="Script" uid="uid://ch11ivcuwv25x" path="res://Scripts/Level/level_walls_2d.gd" id="3_walls"]
+[ext_resource type="Texture2D" uid="uid://v42s6dg55q77" path="res://Assets/Grass/7/7_height.bmp" id="4_aeohn"]
+[ext_resource type="Script" uid="uid://bd406oke06r8t" path="res://Scripts/Level/backdrop_2d.gd" id="4_backdrop"]
+[ext_resource type="Resource" path="res://Assets/Grass/7/grass_surface.tres" id="5_grass"]
+[ext_resource type="PackedScene" path="res://Scenes/screen_effects.tscn" id="6_effects"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o5oi6"]
+shader = ExtResource("1_tl576")
+shader_parameter/albedo_map = ExtResource("2_j5tsp")
+shader_parameter/height_map = ExtResource("4_aeohn")
+shader_parameter/ao_map = ExtResource("3_jrl0a")
+shader_parameter/tile_size = 512.0
+shader_parameter/tint = Color(0.28242135, 0.46286952, 0.40373722, 1)
+shader_parameter/ao_strength = 0.5
+shader_parameter/max_edge_distance = 64.0
+shader_parameter/bevel_width = 18.0
+shader_parameter/bevel_height = 10.0
+shader_parameter/detail_height = 3.0
+shader_parameter/edge_darkening = 0.0
+shader_parameter/wetness = 0.02
+shader_parameter/shininess = 16.0
 
 [sub_resource type="FluidEffect2DElasticity" id="FluidEffect2DElasticity_v17h0"]
 young_modulus = 5000000.0
@@ -34,7 +57,13 @@ _surfaces = [{
 use_colors = true
 mesh = SubResource("ArrayMesh_y78by")
 
-[node name="River" type="Node2D" unique_id=1525033201]
+[node name="LevelRig" type="Node2D" unique_id=1525033201]
+
+[node name="Backdrop" type="Node2D" parent="." unique_id=1525033202]
+z_index = -1
+material = SubResource("ShaderMaterial_o5oi6")
+script = ExtResource("4_backdrop")
+surface = ExtResource("5_grass")
 
 [node name="Fluid2D" type="Fluid2D" parent="." unique_id=1170199389]
 effects = Array[Resource]([SubResource("FluidEffect2DElasticity_v17h0"), SubResource("FluidEffect2DSurfaceTensionAKINCI_2es3b")])
@@ -42,7 +71,7 @@ script = ExtResource("2_mud_fluid")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=50149362]
 
-[node name="RiverWalls" type="StaticBody2D" parent="." unique_id=1804526331]
+[node name="Walls" type="StaticBody2D" parent="." unique_id=1804526331]
 script = ExtResource("3_walls")
 
 [node name="Fluid2DRenderer" type="MultiMeshInstance2D" parent="." unique_id=1910948131 node_paths=PackedStringArray("fluid")]
@@ -58,3 +87,5 @@ script = ExtResource("1_surface")
 fluid = NodePath("../Fluid2D")
 camera = NodePath("../Camera2D")
 surface = ExtResource("2_mud_look")
+
+[node name="ScreenEffects" parent="." instance=ExtResource("6_effects")]

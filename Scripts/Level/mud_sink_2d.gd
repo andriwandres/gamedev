@@ -18,8 +18,8 @@ signal consumed(amount: int, total: int)
 var total_consumed := 0
 
 
-## Called by the stage (or a standalone level) whenever the level area changes.
-func fit_to_river_area(area: Rect2) -> void:
+## Called by the level whenever its area changes.
+func fit_to_level_area(area: Rect2) -> void:
 	if not snap_to_bottom:
 		return
 	size = Vector2(area.size.x, size.y)
