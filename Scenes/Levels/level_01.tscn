@@ -15,6 +15,7 @@ script = ExtResource("1_level")
 size = Vector2(50, 60)
 gravity_scale = 0.35
 cursor_burst = NodePath("CursorBurst")
+cursor_spawn_area = Rect2(270, -440, 1560, 720)
 
 [node name="OpeningBurst" type="Node2D" parent="." unique_id=450454348]
 position = Vector2(608, 100)

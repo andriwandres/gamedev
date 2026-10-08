@@ -77,7 +77,7 @@ func screen_to_level_position(screen_position: Vector2) -> Variant:
 
 ## Level size in meters, which is also the plane size.
 func get_size_meters() -> Vector2:
-	return _level.size if _level else FALLBACK_SIZE
+	return _level.get_area_2d().size / _level.pixels_per_meter if _level else FALLBACK_SIZE
 
 
 ## Rect of the 2D world projected onto the plane, in global 2D coordinates.
@@ -120,6 +120,12 @@ func _sync_mesh() -> void:
 		push_warning("RiverMesh needs a PlaneMesh to be resized.")
 		return
 	plane.size = get_size_meters()
+	# Extending the simulation upstream must not shift the existing obstacles.
+	var center := Vector2.ZERO
+	if _level:
+		var original_center := _level.global_position + _level.size * _level.pixels_per_meter / 2.0
+		center = (_level.get_area_2d().get_center() - original_center) / _level.pixels_per_meter
+	plane.center_offset = Vector3(center.x, plane.center_offset.y, center.y)
 
 
 func _sync_viewport() -> void:

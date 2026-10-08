@@ -13,7 +13,7 @@ signal mud_limit_reached
 
 const SIM_RIG_PATH := "res://Scenes/river_2d_scene.tscn"
 
-## Level size in meters. This is also the size of the plane in 3D.
+## Main level size in meters. The cursor area can extend the plane upstream.
 @export var size := Vector2(10, 40):
 	set(value):
 		size = value.max(Vector2.ONE)
@@ -38,6 +38,11 @@ const SIM_RIG_PATH := "res://Scenes/river_2d_scene.tscn"
 @export_group("Cursor Spawning")
 ## Manual burst used for clicks.
 @export var cursor_burst: MudBurst2D
+## Clickable rectangle in level-local 2D units. May extend upstream of the level.
+@export var cursor_spawn_area := Rect2(0, 0, 400, 300):
+	set(value):
+		cursor_spawn_area = value.abs()
+		_on_area_changed()
 ## Maximum live particles allowed.
 @export_range(1, 10000, 1, "or_greater") var max_cursor_particles := 1000
 @export_flags_2d_physics var spawn_collision_mask := 1
@@ -76,7 +81,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func request_cursor_spawn(world_position: Vector2) -> bool:
 	if Engine.is_editor_hint() or cursor_burst == null or fluid == null:
 		return false
-	if not world_position.is_finite() or not get_area_2d().has_point(world_position):
+	if not world_position.is_finite() or not get_cursor_spawn_area_2d().has_point(world_position):
 		return false
 	_pending_cursor_spawns.append(world_position)
 	return true
@@ -91,6 +96,8 @@ func _physics_process(_delta: float) -> void:
 	var offsets := cursor_burst.get_particle_offsets()
 	var particle_count := fluid.points.size()
 	for world_position in _pending_cursor_spawns:
+		if not get_cursor_spawn_area_2d().has_point(world_position):
+			continue
 		if particle_count + offsets.size() > max_cursor_particles:
 			break
 		cursor_burst.global_position = world_position
@@ -109,6 +116,8 @@ func _cursor_burst_fits(offsets: PackedVector2Array) -> bool:
 	query.shape = particle_shape
 	query.collision_mask = spawn_collision_mask
 	query.collide_with_areas = false
+	# Restrict the click center to the placement rectangle, while allowing the
+	# blob to extend past its edges into empty space.
 	var safe_area := get_area_2d().grow(-particle_shape.radius)
 	var space := get_world_2d().direct_space_state
 	for offset in offsets:
@@ -137,14 +146,28 @@ func add_consumed_mud(amount: int) -> void:
 		mud_limit_reached.emit()
 
 
-## Playable area in global 2D coordinates.
+## Simulation/rendering bounds, including room for bursts around the spawn zone.
 func get_area_2d() -> Rect2:
-	return Rect2(global_position, size * pixels_per_meter)
+	var area := Rect2(Vector2.ZERO, size * pixels_per_meter)
+	if cursor_spawn_area.has_area():
+		var margin := MudFluid2D.particle_radius()
+		if cursor_burst != null:
+			for offset in cursor_burst.get_particle_offsets():
+				margin = maxf(margin, offset.length() + MudFluid2D.particle_radius())
+		area = area.merge(cursor_spawn_area.grow(margin))
+	return Rect2(global_position + area.position, area.size)
+
+
+## Clickable area in global 2D coordinates, independent of obstacle bounds.
+func get_cursor_spawn_area_2d() -> Rect2:
+	return Rect2(global_position + cursor_spawn_area.position, cursor_spawn_area.size)
 
 
 func _draw() -> void:
 	if Engine.is_editor_hint():
-		draw_rect(Rect2(Vector2.ZERO, size * pixels_per_meter), Color(1, 0.8, 0.2, 0.8), false, 4.0)
+		var area := get_area_2d()
+		draw_rect(Rect2(area.position - global_position, area.size), Color(1, 0.8, 0.2, 0.8), false, 4.0)
+		draw_rect(cursor_spawn_area, Color(0.2, 0.8, 1.0, 0.8), false, 3.0)
 
 
 func _apply_gravity() -> void:
