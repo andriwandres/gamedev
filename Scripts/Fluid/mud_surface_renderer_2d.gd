@@ -19,7 +19,12 @@ const SPLAT_MESH_RADIUS := 16.0
 ## Floats per instance in the MultiMesh buffer: a 2D transform (8) + custom data (4).
 const FLOATS_PER_SPLAT := 12
 
-@export var fluid: MudFluid2D
+@export var fluid: MudFluid2D:
+	set(value):
+		fluid = value
+		# This renderer replaces the fluid's own debug drawing.
+		if fluid:
+			fluid.debug_draw = false
 @export var camera: Camera2D
 @export var surface: MudSurfaceMaterial
 ## Splat radius relative to the particle radius. Bigger splats merge into
@@ -58,9 +63,6 @@ func _ready() -> void:
 	_create_splat_pass("AlbedoPass", _albedo_splat, _container)
 	var detail_pass := _create_splat_pass("DetailPass", _detail_splat, self)
 	_surface_material.set_shader_parameter(&"detail_pass", detail_pass.get_texture())
-
-	if fluid:
-		fluid.debug_draw = false
 
 
 func _process(_delta: float) -> void:

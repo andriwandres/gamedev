@@ -30,6 +30,11 @@ func _ready() -> void:
 		_build_collision()
 
 
+## What this piece covers, in global coordinates. Used for the level bounds.
+func get_global_bounds() -> Rect2:
+	return global_transform * Transform2D(0.0, offset) * Level2D.polygon_bounds(polygon)
+
+
 func _draw() -> void:
 	# Polygon2D has no change signal, but it redraws whenever the polygon changes.
 	if polygon != _baked_polygon:

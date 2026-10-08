@@ -19,11 +19,16 @@ enum BlobShape { RECTANGLE, CIRCLE }
 		grid = value.max(Vector2i.ONE)
 		queue_redraw()
 
-## Circle radius, in particles.
-@export var radius := 2:
+## Circle radius, in particle spacings. Particles are packed hexagonally, so
+## the blob is as round as its particle count allows: 1 gives 7 particles,
+## 2 gives 19.
+@export_range(0.0, 10.0, 0.1) var radius := 2.0:
 	set(value):
-		radius = maxi(value, 0)
+		radius = maxf(value, 0.0)
 		queue_redraw()
+
+## Fluid to release into. Leave empty to use the fluid of the level it is in.
+@export var fluid: MudFluid2D
 
 @export_group("Timing")
 ## Start the release schedule when the level loads. Turn off for cursor bursts.
@@ -49,17 +54,17 @@ func _ready() -> void:
 
 
 func release() -> void:
-	var fluid := _find_fluid()
-	if fluid == null:
+	var target := _find_fluid()
+	if target == null:
 		push_warning("%s has no fluid to release into. Is it inside a Level2D?" % name)
 		return
-	var velocity := fluid.global_transform.basis_xform_inv(global_transform.basis_xform(launch_velocity))
+	var velocity := target.global_transform.basis_xform_inv(global_transform.basis_xform(launch_velocity))
 	var points := PackedVector2Array()
 	var velocities := PackedVector2Array()
 	for offset in get_particle_offsets():
-		points.append(fluid.to_local(to_global(offset)))
+		points.append(target.to_local(to_global(offset)))
 		velocities.append(velocity)
-	fluid.spawn_particles(points, velocities)
+	target.spawn_particles(points, velocities)
 	released.emit(points.size())
 
 
@@ -74,11 +79,27 @@ func get_particle_offsets() -> PackedVector2Array:
 				for x in grid.x:
 					offsets.append((Vector2(x, y) - center) * spacing)
 		BlobShape.CIRCLE:
-			for y in range(-radius, radius + 1):
-				for x in range(-radius, radius + 1):
-					if Vector2(x, y).length() <= radius:
-						offsets.append(Vector2(x, y) * spacing)
+			offsets = _hexagonal_disc(radius * spacing, spacing)
 	return offsets
+
+
+## Points `spacing` apart in a hexagonal grid centered on the origin, within
+## `disc_radius` of it.
+static func _hexagonal_disc(disc_radius: float, spacing: float) -> PackedVector2Array:
+	const ROW_HEIGHT := sqrt(3.0) / 2.0
+	# Tolerance, so a radius of exactly n spacings includes ring n.
+	var limit := disc_radius + spacing * 0.01
+	var points := PackedVector2Array()
+	var rows := floori(limit / (spacing * ROW_HEIGHT))
+	for row in range(-rows, rows + 1):
+		var y := row * spacing * ROW_HEIGHT
+		var shift := 0.5 * spacing if row % 2 != 0 else 0.0
+		var columns := ceili(limit / spacing) + 1
+		for column in range(-columns, columns + 1):
+			var point := Vector2(column * spacing + shift, y)
+			if point.length() <= limit:
+				points.append(point)
+	return points
 
 
 func _run_schedule() -> void:
@@ -90,6 +111,8 @@ func _run_schedule() -> void:
 
 
 func _find_fluid() -> MudFluid2D:
+	if fluid:
+		return fluid
 	var level := Level2D.find_level(self)
 	return level.fluid if level != null else null
 

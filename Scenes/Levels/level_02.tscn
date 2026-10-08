@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://dbfx284gpr808"]
+
+[ext_resource type="Script" uid="uid://dhuihlm7u028w" path="res://Scripts/Level/level_2d.gd" id="1_level"]
+[ext_resource type="Script" uid="uid://bas2dwkchw4b3" path="res://Scripts/Level/mud_burst_2d.gd" id="2_burst"]
+[ext_resource type="Script" path="res://Scripts/Level/placement_zone_2d.gd" id="3_placement"]
+[ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="4_terrain"]
+[ext_resource type="Script" path="res://Scripts/Level/goal_zone_2d.gd" id="5_goal"]
+[ext_resource type="PackedScene" path="res://Scenes/Pieces/wall.tscn" id="6_wall"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_776o0"]
+size = Vector2(108, 46)
+
+[sub_resource type="QuadMesh" id="QuadMesh_776o0"]
+
+[node name="Level02" type="Node2D" unique_id=556361835]
+script = ExtResource("1_level")
+title = "The Village"
+mud_budget = 400
+
+[node name="PlacementZone" type="Node2D" parent="."]
+position = Vector2(1050, -80)
+script = ExtResource("3_placement")
+size = Vector2(1560, 720)
+
+[node name="Village" type="Node2D" parent="." unique_id=884171506]
+position = Vector2(1000, 2370)
+script = ExtResource("5_goal")
+size = Vector2(2000, 60)
+
+[node name="LeftWall" parent="." instance=ExtResource("6_wall")]
+position = Vector2(-20, 980)
+size = Vector2(40, 2840)
+
+[node name="RightWall" parent="." instance=ExtResource("6_wall")]
+position = Vector2(2020, 980)
+size = Vector2(40, 2840)
+
+[node name="OpeningBurst" type="Node2D" parent="." unique_id=450454348]
+position = Vector2(608, 100)
+script = ExtResource("2_burst")
+autostart = false
+
+[node name="LateBurst" type="Node2D" parent="." unique_id=1168492288]
+position = Vector2(698, 140)
+script = ExtResource("2_burst")
+shape = 1
+autostart = false
+delay = 4.0
+launch_velocity = Vector2(-150, 0)
+
+[node name="Boulder" type="Polygon2D" parent="." unique_id=388245298]
+texture_repeat = 2
+position = Vector2(441, 489)
+color = Color(0.36, 0.29, 0.22, 1)
+polygon = PackedVector2Array(-60, 20, -54, -158, 432, -75, 672, 3, 637, 224, -49, 453)
+script = ExtResource("4_terrain")
+
+[node name="Terrain2D" type="Polygon2D" parent="." unique_id=1452495196]
+texture_repeat = 2
+position = Vector2(1240, 518)
+color = Color(0.36, 0.29, 0.22, 1)
+polygon = PackedVector2Array(198, 44, -26, 240, 414, 274, 461, 7)
+script = ExtResource("4_terrain")
+metadata/_custom_type_script = "uid://dgaefv0ribnd6"
+
+[node name="Terrain2D2" type="Polygon2D" parent="." unique_id=704518883]
+texture_repeat = 2
+position = Vector2(727, 955)
+color = Color(0.36, 0.29, 0.22, 1)
+polygon = PackedVector2Array(293, 183, -50, 66, 137, 286, 472, 268, 461, 7)
+script = ExtResource("4_terrain")
+metadata/_custom_type_script = "uid://dgaefv0ribnd6"
+
+[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=1149492900]
+mass = 0.1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=1872622573]
+position = Vector2(496.31482, 1875.9868)
+shape = SubResource("RectangleShape2D_776o0")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="RigidBody2D" unique_id=204662713]
+position = Vector2(499.31482, 1875.9868)
+scale = Vector2(-226.62958, 85.973694)
+mesh = SubResource("QuadMesh_776o0")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=997526886]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1876381349]
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D" unique_id=958578031]

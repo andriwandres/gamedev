@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://b00xhr3pj46jl" path="res://Scripts/Fluid/mud_fluid_2d.gd" id="1_fluid"]
+
+[sub_resource type="FluidEffect2DElasticity" id="FluidEffect2DElasticity_v17h0"]
+young_modulus = 5000000.0
+poisson_ratio = 0.1
+nonlinear_strain = false
+
+[sub_resource type="FluidEffect2DSurfaceTensionAKINCI" id="FluidEffect2DSurfaceTensionAKINCI_2es3b"]
+fluid_tension_coefficient = 3.205
+boundary_adhesion_coefficient = 10.79
+
+[node name="MudFluid" type="Fluid2D"]
+effects = Array[Resource]([SubResource("FluidEffect2DElasticity_v17h0"), SubResource("FluidEffect2DSurfaceTensionAKINCI_2es3b")])
+script = ExtResource("1_fluid")

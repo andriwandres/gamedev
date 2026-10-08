@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LevelCatalog" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/level_catalog.gd" id="1_catalog"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/level_01.tscn" id="2_level_01"]
+[ext_resource type="PackedScene" path="res://Scenes/Levels/level_02.tscn" id="3_level_02"]
+
+[resource]
+script = ExtResource("1_catalog")
+levels = Array[PackedScene]([ExtResource("2_level_01"), ExtResource("3_level_02")])

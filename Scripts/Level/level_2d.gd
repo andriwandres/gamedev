@@ -1,133 +1,48 @@
 @tool
 class_name Level2D
 extends Node2D
-## Root of a level. Everything inside is designed in 2D (Wall2D, Terrain2D,
-## MudBurst2D, ...). The level owns its size and brings its own mud simulation
-## and camera, which it keeps fitted to the window. That makes it playable both
-## inside a LevelStage2D and on its own (F6).
+## Root of a level. A level is just its pieces: walls and obstacles (see
+## Scenes/Pieces), PlacementZone2Ds where the player may place mud and
+## GoalZone2Ds the mud has to reach. Its bounds are whatever the pieces cover,
+## so levels can be any size.
+##
+## Gameplay (gameplay_scene.tscn) brings the mud, camera and HUD and plays the
+## level. Run a level scene on its own (F6) to play just that level.
 
-signal area_changed
-signal mud_consumed_changed(total: int, limit: int)
-signal mud_limit_reached
+signal completed
 
-## Mud simulation, camera, walls and backdrop every level plays with.
-const RIG_PATH := "res://Scenes/level_rig.tscn"
+const GAMEPLAY_SCENE_PATH := "res://Scenes/gameplay_scene.tscn"
+const BOUNDS_COLOR := Color(1.0, 0.8, 0.2, 0.8)
 
-## Main level size in meters. The cursor area can extend the plane upstream.
-@export var size := Vector2(10, 40):
-	set(value):
-		size = value.max(Vector2.ONE)
-		_on_area_changed()
-
-## How many 2D units (pixels) make up one meter.
-@export var pixels_per_meter := 40.0:
-	set(value):
-		pixels_per_meter = maxf(value, 0.01)
-		_on_area_changed()
-
+@export var title := "Untitled"
+## Mud, in particles, the player may place in this level.
+@export_range(0, 10000, 1, "or_greater") var mud_budget := 300
 ## Gravity relative to the project default (980). Lower values make the mud
 ## flow slower and give the player more time.
-@export_range(0.0, 2.0, 0.05) var gravity_scale := 0.3:
-	set(value):
-		gravity_scale = value
-		_apply_gravity()
+@export_range(0.0, 2.0, 0.05) var gravity_scale := 0.35
+## Empty space kept around the pieces when framing the level, in pixels.
+@export var margin := 40.0
 
-## How much mud (in particles) may reach a MudSink2D before the level is lost.
-@export var mud_limit := 30
-
-@export_group("Cursor Spawning")
-## Manual burst used for clicks.
-@export var cursor_burst: MudBurst2D
-## Clickable rectangle in level-local 2D units. May extend upstream of the level.
-@export var cursor_spawn_area := Rect2(0, 0, 400, 300):
-	set(value):
-		cursor_spawn_area = value.abs()
-		_on_area_changed()
-## Maximum live particles allowed.
-@export_range(1, 10000, 1, "or_greater") var max_cursor_particles := 1000
-@export_flags_2d_physics var spawn_collision_mask := 1
-
-## Mud that has reached a MudSink2D so far.
-var mud_consumed := 0
-
-## The mud simulation this level feeds. Created by the level unless bound
-## before it enters the tree.
+## The mud simulation this level plays with. Bound by Gameplay.
 var fluid: MudFluid2D
-
-var _camera: Camera2D
-var _pending_cursor_spawns: Array[Vector2] = []
+var is_completed := false
 
 
 func _ready() -> void:
+	# In the editor, keep the bounds outline following pieces as they move.
+	set_process(Engine.is_editor_hint())
 	if Engine.is_editor_hint():
 		return
+	if get_parent() == get_tree().root:
+		_play_in_gameplay.call_deferred()
+		return
 	_apply_gravity()
-	if fluid == null:
-		_attach_rig()
-	get_viewport().size_changed.connect(_fit_to_area)
-	_fit_to_area()
+	for goal in get_goals():
+		goal.progressed.connect(_check_completed.unbind(2))
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if Engine.is_editor_hint() or not event is InputEventMouseButton:
-		return
-	if event.is_action_pressed(&"spawn_liquid"):
-		var world_position: Vector2 = get_canvas_transform().affine_inverse() * event.position
-		if request_cursor_spawn(world_position):
-			get_viewport().set_input_as_handled()
-
-
-## Queues a world-space 2D position; physics queries and spawning run next tick.
-func request_cursor_spawn(world_position: Vector2) -> bool:
-	if Engine.is_editor_hint() or cursor_burst == null or fluid == null:
-		return false
-	if not world_position.is_finite() or not get_cursor_spawn_area_2d().has_point(world_position):
-		return false
-	_pending_cursor_spawns.append(world_position)
-	return true
-
-
-func _physics_process(_delta: float) -> void:
-	if Engine.is_editor_hint() or _pending_cursor_spawns.is_empty():
-		return
-	if cursor_burst == null or fluid == null:
-		_pending_cursor_spawns.clear()
-		return
-	var offsets := cursor_burst.get_particle_offsets()
-	var particle_count := fluid.points.size()
-	for world_position in _pending_cursor_spawns:
-		if not get_cursor_spawn_area_2d().has_point(world_position):
-			continue
-		if particle_count + offsets.size() > max_cursor_particles:
-			break
-		cursor_burst.global_position = world_position
-		if not _cursor_burst_fits(offsets):
-			continue
-		cursor_burst.release()
-		# Reserve this tick's spawns even if the physics backend updates points later.
-		particle_count += offsets.size()
-	_pending_cursor_spawns.clear()
-
-
-func _cursor_burst_fits(offsets: PackedVector2Array) -> bool:
-	var particle_shape := CircleShape2D.new()
-	particle_shape.radius = MudFluid2D.particle_radius()
-	var query := PhysicsShapeQueryParameters2D.new()
-	query.shape = particle_shape
-	query.collision_mask = spawn_collision_mask
-	query.collide_with_areas = false
-	# Restrict the click center to the placement rectangle, while allowing the
-	# blob to extend past its edges into empty space.
-	var safe_area := get_area_2d().grow(-particle_shape.radius)
-	var space := get_world_2d().direct_space_state
-	for offset in offsets:
-		var point := cursor_burst.to_global(offset)
-		if not safe_area.has_point(point):
-			return false
-		query.transform = Transform2D(0.0, point)
-		if not space.intersect_shape(query, 1).is_empty():
-			return false
-	return true
+func _process(_delta: float) -> void:
+	queue_redraw()
 
 
 ## The Level2D that `node` belongs to, or null.
@@ -137,75 +52,94 @@ static func find_level(node: Node) -> Level2D:
 	return node as Level2D
 
 
-## Called by MudSink2D when mud reaches it.
-func add_consumed_mud(amount: int) -> void:
-	var was_below_limit := mud_consumed < mud_limit
-	mud_consumed += amount
-	mud_consumed_changed.emit(mud_consumed, mud_limit)
-	if was_below_limit and mud_consumed >= mud_limit:
-		mud_limit_reached.emit()
+## Smallest rect containing all `points`.
+static func polygon_bounds(points: PackedVector2Array) -> Rect2:
+	if points.is_empty():
+		return Rect2()
+	var bounds := Rect2(points[0], Vector2.ZERO)
+	for point in points:
+		bounds = bounds.expand(point)
+	return bounds
 
 
-## Simulation/rendering bounds, including room for bursts around the spawn zone.
-func get_area_2d() -> Rect2:
-	var area := Rect2(Vector2.ZERO, size * pixels_per_meter)
-	if cursor_spawn_area.has_area():
-		var margin := MudFluid2D.particle_radius()
-		if cursor_burst != null:
-			for offset in cursor_burst.get_particle_offsets():
-				margin = maxf(margin, offset.length() + MudFluid2D.particle_radius())
-		area = area.merge(cursor_spawn_area.grow(margin))
-	return Rect2(global_position + area.position, area.size)
+## Everything the level's pieces cover plus `margin`, in global coordinates.
+func get_bounds() -> Rect2:
+	var bounds := Rect2()
+	var is_first := true
+	for node in find_children("*", "", true, false):
+		var piece_bounds := _piece_bounds(node)
+		if not piece_bounds.has_area():
+			continue
+		bounds = piece_bounds if is_first else bounds.merge(piece_bounds)
+		is_first = false
+	return bounds.grow(margin)
 
 
-## Clickable area in global 2D coordinates, independent of obstacle bounds.
-func get_cursor_spawn_area_2d() -> Rect2:
-	return Rect2(global_position + cursor_spawn_area.position, cursor_spawn_area.size)
+func get_placement_zones() -> Array[PlacementZone2D]:
+	var zones: Array[PlacementZone2D] = []
+	zones.assign(_find_all(PlacementZone2D))
+	return zones
+
+
+func get_goals() -> Array[GoalZone2D]:
+	var goals: Array[GoalZone2D] = []
+	goals.assign(_find_all(GoalZone2D))
+	return goals
+
+
+## The point inside any placement zone closest to `global_point`, or null if
+## the level has no placement zones.
+func snap_to_placement_zones(global_point: Vector2) -> Variant:
+	var closest: Variant = null
+	for zone in get_placement_zones():
+		var candidate := zone.clamp_global_point(global_point)
+		if closest == null or global_point.distance_squared_to(candidate) < global_point.distance_squared_to(closest):
+			closest = candidate
+	return closest
 
 
 func _draw() -> void:
 	if Engine.is_editor_hint():
-		var area := get_area_2d()
-		draw_rect(Rect2(area.position - global_position, area.size), Color(1, 0.8, 0.2, 0.8), false, 4.0)
-		draw_rect(cursor_spawn_area, Color(0.2, 0.8, 1.0, 0.8), false, 3.0)
+		var bounds := get_bounds()
+		draw_set_transform_matrix(global_transform.affine_inverse())
+		draw_rect(bounds, BOUNDS_COLOR, false, 4.0)
+
+
+## Bounds of one piece in global coordinates, or an empty rect if it has none.
+## Pieces opt in with get_global_bounds(); plain physics shapes count too.
+func _piece_bounds(node: Node) -> Rect2:
+	if node.has_method(&"get_global_bounds"):
+		return node.get_global_bounds()
+	if node is CollisionShape2D and node.shape != null:
+		return node.global_transform * node.shape.get_rect()
+	if node is CollisionPolygon2D and node.polygon.size() > 0:
+		return node.global_transform * polygon_bounds(node.polygon)
+	return Rect2()
+
+
+func _find_all(type: Variant) -> Array[Node]:
+	return find_children("*", "", true, false).filter(func(node: Node) -> bool: return is_instance_of(node, type))
+
+
+func _check_completed() -> void:
+	if is_completed:
+		return
+	var goals := get_goals()
+	if goals.is_empty() or not goals.all(func(goal: GoalZone2D) -> bool: return goal.is_reached()):
+		return
+	is_completed = true
+	completed.emit()
 
 
 func _apply_gravity() -> void:
 	# Sets the gravity of the whole 2D world this level plays in.
-	if Engine.is_editor_hint() or not is_inside_tree():
-		return
 	var default_gravity := float(ProjectSettings.get_setting("physics/2d/default_gravity", 980.0))
 	PhysicsServer2D.area_set_param(get_world_2d().space, PhysicsServer2D.AREA_PARAM_GRAVITY, default_gravity * gravity_scale)
 
 
-func _on_area_changed() -> void:
-	queue_redraw()
-	area_changed.emit()
-	if not Engine.is_editor_hint() and is_node_ready():
-		_fit_to_area()
-
-
-func _attach_rig() -> void:
-	var rig: Node = load(RIG_PATH).instantiate()
-	add_child(rig)
-	fluid = rig.find_children("*", "Fluid2D", true, false).front() as MudFluid2D
-	_camera = rig.find_children("*", "Camera2D", true, false).front() as Camera2D
-
-
-## Fits the camera and every area-aware node (walls, sinks, ...) to the level.
-func _fit_to_area() -> void:
-	var area := get_area_2d()
-	# Any node in the level can follow its size by implementing
-	# fit_to_level_area(area: Rect2).
-	propagate_call(&"fit_to_level_area", [area])
-	if _camera:
-		_frame_camera(_camera, area)
-
-
-## Zooms so the whole area is visible, centered in the window.
-func _frame_camera(camera: Camera2D, area: Rect2) -> void:
-	var fit := get_viewport().get_visible_rect().size / area.size
-	camera.anchor_mode = Camera2D.ANCHOR_MODE_DRAG_CENTER
-	camera.rotation = 0.0
-	camera.global_position = area.get_center()
-	camera.zoom = Vector2.ONE * minf(fit.x, fit.y)
+## F6: swap this bare level for a Gameplay that plays it.
+func _play_in_gameplay() -> void:
+	var gameplay: Gameplay = load(GAMEPLAY_SCENE_PATH).instantiate()
+	gameplay.level_override = load(scene_file_path)
+	get_tree().root.add_child(gameplay)
+	queue_free()

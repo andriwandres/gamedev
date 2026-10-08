@@ -26,6 +26,12 @@ func _ready() -> void:
 		_no_outline = ImageTexture.create_from_image(image)
 
 
+func _validate_property(property: Dictionary) -> void:
+	# Derived from the surface: rebuilt, never saved.
+	if property.name == "material":
+		property.usage = PROPERTY_USAGE_NONE
+
+
 func _process(_delta: float) -> void:
 	var visible_rect := _visible_rect()
 	if visible_rect != _drawn_rect:

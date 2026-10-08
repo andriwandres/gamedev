@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dgaefv0ribnd6" path="res://Scripts/Level/terrain_2d.gd" id="1_terrain"]
+
+[node name="Boulder" type="Polygon2D"]
+texture_repeat = 2
+polygon = PackedVector2Array(-90, -40, -40, -95, 45, -90, 100, -30, 85, 55, 20, 95, -60, 80, -105, 20)
+script = ExtResource("1_terrain")

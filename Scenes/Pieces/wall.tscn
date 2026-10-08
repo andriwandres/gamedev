@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://c3uwcdg6f61hq" path="res://Scripts/Level/wall_2d.gd" id="1_wall"]
+
+[node name="Wall" type="Polygon2D"]
+texture_repeat = 2
+script = ExtResource("1_wall")
